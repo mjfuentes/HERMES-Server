@@ -10,27 +10,27 @@ public class Notificacion {
     private Long categoria_id;
     private Date fechaEnvio;
     private Date fechaRecepcion;
-    private Long niño_id;
+    private Long nene_id;
     private Long id;
     private Long etiqueta_id;
 
-    public  Notificacion(Long id, Contenido contenido, Contexto contexto, Long categoria_id, Date fechaEnvio, Date fechaRecepcion, Long niño_id){
+    public  Notificacion(Long id, Contenido contenido, Contexto contexto, Long categoria_id, Date fechaEnvio, Date fechaRecepcion, Long nene_id){
         this.id = id;
         this.contenido = contenido;
         this.contexto = contexto;
         this.categoria_id = categoria_id;
         this.fechaEnvio = fechaEnvio;
         this.fechaRecepcion = fechaRecepcion;
-        this.niño_id = niño_id;
+        this.nene_id = nene_id;
     }
 
-    public  Notificacion(Contenido contenido, Contexto contexto, Long categoria_id, Date fechaEnvio, Date fechaRecepcion, Long niño_id){
+    public  Notificacion(Contenido contenido, Contexto contexto, Long categoria_id, Date fechaEnvio, Date fechaRecepcion, Long nene_id){
         this.contenido = contenido;
         this.contexto = contexto;
         this.categoria_id = categoria_id;
         this.fechaEnvio = fechaEnvio;
         this.fechaRecepcion = fechaRecepcion;
-        this.niño_id = niño_id;
+        this.nene_id = nene_id;
     }
 
     public Contenido getContenido() {return contenido;}
@@ -51,8 +51,8 @@ public class Notificacion {
         return fechaRecepcion;
     }
 
-    public Niño getNiño() {
-        return DaoFactory.getNiñoDao().getNiño(this.niño_id);
+    public Nene getNene() {
+        return DaoFactory.getNeneDao().getNene(this.nene_id);
     }
 
     public Etiqueta getEtiqueta() {

@@ -1,14 +1,12 @@
 package Dao;
 
-import Enums.Contexto;
-import Model.Niño;
-import Model.Notificacion;
+import Model.Nene;
 
 import java.sql.*;
 
-public class NiñoDAO {
+public class NeneDAO {
 
-    public Niño getNiño(Long id){
+    public Nene getNene(Long id){
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareGet(id);
@@ -16,7 +14,7 @@ public class NiñoDAO {
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                return new Niño(resultSet.getString("nombre"),resultSet.getLong("id"));
+                return new Nene(resultSet.getString("nombre"),resultSet.getLong("id"));
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

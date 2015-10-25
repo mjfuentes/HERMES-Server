@@ -4,7 +4,7 @@ public class DaoFactory {
     private static NotificacionDAO notificacionDAO;
     private static EtiquetaDAO etiquetaDAO;
     private static CategoriaDAO categoriaDao;
-    private static NiñoDAO niñoDAO;
+    private static NeneDAO neneDAO;
 
     public static NotificacionDAO getNotificacionDAO(){
         if (notificacionDAO == null){
@@ -27,10 +27,10 @@ public class DaoFactory {
         return categoriaDao;
     }
 
-    public static NiñoDAO getNiñoDao(){
-        if (niñoDAO == null){
-            niñoDAO = new NiñoDAO();
+    public static NeneDAO getNeneDao(){
+        if (neneDAO == null){
+            neneDAO = new NeneDAO();
         }
-        return niñoDAO;
+        return neneDAO;
     }
 }

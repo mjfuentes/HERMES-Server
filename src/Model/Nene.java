@@ -1,10 +1,10 @@
 package Model;
 
-public class Niño {
+public class Nene {
     private String nombre;
     private Long id;
 
-    public Niño(String nombre, Long id){
+    public Nene(String nombre, Long id){
         this.nombre = nombre;
         this.id = id;
     }

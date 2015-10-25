@@ -2,9 +2,7 @@ package Dao;
 
 import Enums.Contexto;
 import Model.Contenido;
-import Model.Etiqueta;
 import Model.Notificacion;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -29,7 +27,7 @@ public class NotificacionDAO {
                 " (contenido, contexto, categoria_id, fecha_envio, fecha_recepcion, nino_id" +
                 " VALUES (" + notificacion.getContenido().toString() + "," + notificacion.getContexto().toString() + "," +
                 notificacion.getCategoria().getId() + "," + notificacion.getFechaEnvio() + "," +
-                notificacion.getFechaRecepcion() + "," + notificacion.getNiño().getId() + ")";
+                notificacion.getFechaRecepcion() + "," + notificacion.getNene().getId() + ")";
     }
 
     public Notificacion getNotificacion(Long id){
@@ -48,11 +46,11 @@ public class NotificacionDAO {
         return null;
     }
 
-    public List<Notificacion> getNotificacionesFiltradas(Contenido contenido,Contexto contexto,Long niño_id,Long categoria_id, Long etiqueta_id,Date desde,Date hasta){
+    public List<Notificacion> getNotificacionesFiltradas(Contenido contenido,Contexto contexto,Long nene_id,Long categoria_id, Long etiqueta_id,Date desde,Date hasta){
         List<Notificacion> lista = new ArrayList<>();
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            String query = prepareFilteredList(contenido, contexto, niño_id, categoria_id, etiqueta_id, desde, hasta);
+            String query = prepareFilteredList(contenido, contexto, nene_id, categoria_id, etiqueta_id, desde, hasta);
             Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -65,10 +63,10 @@ public class NotificacionDAO {
         return lista;
     }
 
-    private String prepareFilteredList(Contenido contenido,Contexto contexto,Long niño_id,Long categoria_id, Long etiqueta_id,Date desde,Date hasta){
+    private String prepareFilteredList(Contenido contenido,Contexto contexto,Long nene_id,Long categoria_id, Long etiqueta_id,Date desde,Date hasta){
         Boolean first = true;
         StringBuilder sb = new StringBuilder("SELECT * FROM NOTIFICACION");
-        if (contenido != null || contexto != null || niño_id != null || categoria_id != null || etiqueta_id != null || desde != null || hasta != null) {
+        if (contenido != null || contexto != null || nene_id != null || categoria_id != null || etiqueta_id != null || desde != null || hasta != null) {
             sb.append(" WHERE");
             if (contenido != null) {
                 sb.append(" contenido = " + contenido.toString());
@@ -81,11 +79,11 @@ public class NotificacionDAO {
                 sb.append(" contexto=" + contexto.toString());
                 first = false;
             }
-            if (niño_id != null) {
+            if (nene_id != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" nino_id =" + niño_id.toString());
+                sb.append(" nino_id =" + nene_id.toString());
                 first = false;
             }
             if (categoria_id != null) {

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class NotificacionService {
-    public List<Notificacion> filtrar(String contenido, String contexto, Long niño_id, Date desde, Date hasta, Long etiqueta_id, Long categoria_id){
-        return DaoFactory.getNotificacionDAO().getNotificacionesFiltradas(Contenido.valueOf(contenido), Contexto.valueOf(contexto),niño_id,categoria_id,etiqueta_id,desde,hasta);
+    public List<Notificacion> filtrar(String contenido, String contexto, Long nene_id, Date desde, Date hasta, Long etiqueta_id, Long categoria_id){
+        return DaoFactory.getNotificacionDAO().getNotificacionesFiltradas(Contenido.valueOf(contenido), Contexto.valueOf(contexto),nene_id,categoria_id,etiqueta_id,desde,hasta);
     }
 }
