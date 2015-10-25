@@ -3,6 +3,8 @@ package Dao;
 public class DaoFactory {
     private static NotificacionDAO notificacionDAO;
     private static EtiquetaDAO etiquetaDAO;
+    private static CategoriaDAO categoriaDao;
+    private static NiñoDAO niñoDAO;
 
     public static NotificacionDAO getNotificacionDAO(){
         if (notificacionDAO == null){
@@ -16,5 +18,19 @@ public class DaoFactory {
             etiquetaDAO = new EtiquetaDAO();
         }
         return etiquetaDAO;
+    }
+
+    public static CategoriaDAO getCategoriaDao(){
+        if (categoriaDao == null){
+            categoriaDao = new CategoriaDAO();
+        }
+        return categoriaDao;
+    }
+
+    public static NiñoDAO getNiñoDao(){
+        if (niñoDAO == null){
+            niñoDAO = new NiñoDAO();
+        }
+        return niñoDAO;
     }
 }

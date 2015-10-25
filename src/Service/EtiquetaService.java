@@ -3,15 +3,19 @@ package Service;
 import Dao.DaoFactory;
 import Model.Etiqueta;
 
+import java.util.List;
+
 public class EtiquetaService {
 
     public void crearEtiqueta(String nombre){
-        Etiqueta nueva = new Etiqueta(nombre);
-        DaoFactory.getEtiquetaDao().guardarEtiqueta(nueva);
+        DaoFactory.getEtiquetaDao().guardarEtiqueta(nombre);
     }
 
-    public void eliminarEtiqueta(String nombre){
-        DaoFactory.getEtiquetaDao().eliminarEtiqueta(nombre);
+    public void eliminarEtiqueta(Long id){
+        DaoFactory.getEtiquetaDao().eliminarEtiqueta(id);
     }
 
+    public List<Etiqueta> getEtiquetas(){
+        return DaoFactory.getEtiquetaDao().getEtiquetas();
+    }
 }
