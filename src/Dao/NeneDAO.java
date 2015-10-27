@@ -1,6 +1,7 @@
 package Dao;
 
 import Model.Nene;
+import Utils.ConexionManager;
 
 import java.sql.*;
 
@@ -10,7 +11,7 @@ public class NeneDAO {
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareGet(id);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {

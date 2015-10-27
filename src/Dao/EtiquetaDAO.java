@@ -1,20 +1,23 @@
 package Dao;
 
+import Interfaz.Monitor;
 import Model.Etiqueta;
 import Model.Notificacion;
+import Utils.ConexionManager;
+import javafx.beans.InvalidationListener;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
-public class EtiquetaDAO {
+public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
 
     public List<Etiqueta> getEtiquetas(){
         List<Etiqueta> lista = new ArrayList<Etiqueta>();
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareList();
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -28,11 +31,12 @@ public class EtiquetaDAO {
 
     public void eliminarEtiqueta(Long id){
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareDelete(id);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             statement.executeUpdate(query);
+            this.setChanged();
+            this.notifyObservers();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -40,9 +44,8 @@ public class EtiquetaDAO {
 
     public Etiqueta getEtiqueta(Long id){
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareGet(id);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
@@ -56,33 +59,55 @@ public class EtiquetaDAO {
 
     public void guardarEtiqueta(String nombre){
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareInsert(nombre);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             statement.executeUpdate(query);
+            this.setChanged();
+            this.notifyObservers();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    public void renombrarEtiqueta(String nombre, Long id){
+        try {
+            String query = prepareRename(nombre, id);
+            Connection conexion = ConexionManager.getConexion();
+            Statement statement = conexion.createStatement();
+            statement.executeUpdate(query);
+            this.setChanged();
+            this.notifyObservers();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String prepareRename(String nombre, Long id){
+        return "UPDATE etiqueta SET nombre = '" + nombre + "' WHERE ID=" + id;
+    }
+
     private String prepareGet(Long id){
-        return "SELECT * FROM ETIQUETA WHERE ID=" + id;
+        return "SELECT * FROM etiqueta WHERE ID=" + id;
     }
 
     private String prepareDelete(Long id){
-        return "DELETE FROM ETIQUETA WHERE ID=" + id;
+        return "DELETE FROM etiqueta WHERE ID=" + id;
     }
 
 
     private String prepareInsert(String nombre){
-        return "INSERT INTO ETIQUETA" +
+        return "INSERT INTO etiqueta" +
                 " (nombre)" +
-                " VALUES (" + nombre + ")";
+                " VALUES ('" + nombre + "')";
     }
 
     private String prepareList(){
-        return "SELECT * FROM ETIQUETA";
+        return "SELECT * FROM etiqueta";
     }
 
+    @Override
+    public List<Etiqueta> getAllItems() {
+        return this.getEtiquetas();
+    }
 }

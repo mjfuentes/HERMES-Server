@@ -3,18 +3,19 @@ package Dao;
 import Enums.Contexto;
 import Model.Contenido;
 import Model.Notificacion;
+import Utils.ConexionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NotificacionDAO {
+public class NotificacionDAO extends ObservableDAO<Notificacion>{
     public void guardarNotificacion(Notificacion notificacion){
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareInsert(notificacion);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             statement.executeUpdate(query);
         } catch (SQLException | ClassNotFoundException e) {
@@ -34,7 +35,7 @@ public class NotificacionDAO {
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareGet(id);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
@@ -51,7 +52,7 @@ public class NotificacionDAO {
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareFilteredList(contenido, contexto, nene_id, categoria_id, etiqueta_id, desde, hasta);
-            Connection conexion = DriverManager.getConnection("jdbc:odbc:laboratorio", "user", "password");
+            Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -69,50 +70,49 @@ public class NotificacionDAO {
         if (contenido != null || contexto != null || nene_id != null || categoria_id != null || etiqueta_id != null || desde != null || hasta != null) {
             sb.append(" WHERE");
             if (contenido != null) {
-                sb.append(" contenido = " + contenido.toString());
+                sb.append(" contenido = ").append(contenido.toString()).append("'");
                 first = false;
             }
             if (contexto != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" contexto=" + contexto.toString());
+                sb.append(" contexto='").append(contexto.toString()).append("'");
                 first = false;
             }
             if (nene_id != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" nino_id =" + nene_id.toString());
+                sb.append(" nino_id =").append(nene_id.toString());
                 first = false;
             }
             if (categoria_id != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" nino_id =" + categoria_id.toString());
+                sb.append(" categoria_id =").append(categoria_id.toString());
                 first = false;
             }
             if (etiqueta_id != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" nino_id =" + etiqueta_id.toString());
+                sb.append(" etiqueta_id =").append(etiqueta_id.toString());
                 first = false;
             }
             if (desde != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" nino_id =" + desde.toString());
+                sb.append(" fecha_envio > '").append(desde.toString()).append("'");
                 first = false;
             }
             if (hasta != null) {
                 if (!first){
                     sb.append(" & ");
                 }
-                sb.append(" nino_id =" + hasta.toString());
-                first = false;
+                sb.append(" fecha_envio < '").append(hasta.toString()).append("'");
             }
         }
         return sb.toString();
@@ -120,5 +120,10 @@ public class NotificacionDAO {
 
     private String prepareGet(Long id){
         return "SELECT * FROM NOTIFICACION WHERE ID="+id;
+    }
+
+    @Override
+    public List<Notificacion> getAllItems() {
+        return null;
     }
 }

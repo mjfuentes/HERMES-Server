@@ -9,6 +9,12 @@ public class Categoria {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return nombre;
+    }
+
+
     public String getNombre() {
         return nombre;
     }
