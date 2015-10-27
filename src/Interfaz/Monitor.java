@@ -13,13 +13,23 @@ import Utils.ObserverCombobox;
 import java.awt.EventQueue;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.Color;
+import java.awt.List;
+import javax.swing.table.DefaultTableModel;
+import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Font;
 
 public class Monitor {
 
 	private JFrame frame;
 	private JTextField textField;
 	private JTextField textField_1;
+	private JTable table;
 	/**
 	 * Launch the application.
 	 */
@@ -43,10 +53,6 @@ public class Monitor {
 	 */
 	public Monitor() {
 		initialize();
-	}
-
-	public void updateEtiquetas(){
-
 	}
 
 	/**
@@ -141,11 +147,36 @@ public class Monitor {
 		JButton botonFiltrar = new JButton("FILTRAR");
 		botonFiltrar.setBounds(20, 224, 438, 23);
 		panel.add(botonFiltrar);
-		botonFiltrar.addActionListener(new FIltrarListener(new JTable(),comboBox_contenido,combobox_contexto,combobox_nene,combobox_categoria,combobox_etiqueta1,textfield_desde,textfield_hasta));
+		botonFiltrar.addActionListener(new FIltrarListener(new JTable(), comboBox_contenido, combobox_contexto, combobox_nene, combobox_categoria, combobox_etiqueta1, textfield_desde, textfield_hasta));
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(10, 280, 964, 333);
 		frame.getContentPane().add(panel_1);
+		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		table = new JTable();
+		table.setBorder(null);
+		table.setFont(new Font("Dialog", Font.PLAIN, 17));
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null},
+				{null, null, null, null, null, null},
+				{null, null, null, null, null, null},
+				{null, null, null, null, null, null},
+				{null, null, null, null, null, null},
+			},
+			new String[] {
+				"Fecha/Hora", "Contenido", "Contexto", "Categoria", "Niñ@", "Etiquetas"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, Object.class, Object.class, Object.class, Object.class, Object.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		panel_1.add(table);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(519, 11, 455, 258);
@@ -174,8 +205,6 @@ public class Monitor {
 		JLabel lblEliminarEtiqueta = new JLabel("Eliminar Etiqueta:");
 		lblEliminarEtiqueta.setBounds(10, 64, 89, 14);
 		panel_2.add(lblEliminarEtiqueta);
-		
-
 
 		ObserverCombobox combobox_etiqueta2 = new ObserverCombobox();
 		combobox_etiqueta2.setBounds(123, 61, 207, 20);
