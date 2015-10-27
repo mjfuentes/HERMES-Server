@@ -12,7 +12,6 @@ public class NeneDAO extends ObservableDAO{
 
     public Nene getNene(Long id){
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareGet(id);
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
@@ -27,7 +26,7 @@ public class NeneDAO extends ObservableDAO{
     }
 
     private String prepareGet(Long id){
-        return "SELECT * FROM NINO WHERE ID="+id;
+        return "SELECT * FROM nene WHERE ID="+id;
     }
 
     public List getNenes() {

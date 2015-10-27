@@ -6,18 +6,14 @@ import Listener.EtiquetaAddListener;
 import Listener.EtiquetaDeleteListener;
 import Listener.EtiquetaRenameListener;
 import Enums.Contenido;
+import Listener.FIltrarListener;
+import Utils.JsonFromFileReader;
 import Utils.ObserverCombobox;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
+import javax.swing.*;
 import java.awt.Color;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JSeparator;
 
 public class Monitor {
 
@@ -32,6 +28,8 @@ public class Monitor {
 			public void run() {
 				try {
 					Monitor window = new Monitor();
+					JsonFromFileReader reader = new JsonFromFileReader();
+					reader.read("datos");
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,7 +68,7 @@ public class Monitor {
 		label_contenido.setBounds(10, 11, 58, 14);
 		panel.add(label_contenido);
 		
-		JComboBox comboBox_contenido = new JComboBox();
+		ObserverCombobox comboBox_contenido = new ObserverCombobox();
 		comboBox_contenido.setBounds(69, 9, 127, 19);
 		panel.add(comboBox_contenido);
 		comboBox_contenido.addItem(Contenido.Alegre);
@@ -114,21 +112,21 @@ public class Monitor {
 		lblFechaHora.setBounds(10, 116, 69, 14);
 		panel.add(lblFechaHora);
 		
-		JLabel lblDesde = new JLabel("desde:");
-		lblDesde.setBounds(89, 136, 69, 14);
-		panel.add(lblDesde);
+		JLabel label_desde = new JLabel("desde:");
+		label_desde.setBounds(89, 136, 69, 14);
+		panel.add(label_desde);
 		
-		JLabel lblHasta = new JLabel("hasta:");
-		lblHasta.setBounds(237, 136, 69, 14);
-		panel.add(lblHasta);
-		
-		JComboBox comboBox_4 = new JComboBox();
-		comboBox_4.setBounds(69, 156, 127, 19);
-		panel.add(comboBox_4);
-		
-		JComboBox comboBox_5 = new JComboBox();
-		comboBox_5.setBounds(223, 156, 127, 19);
-		panel.add(comboBox_5);
+		JLabel label_hasta = new JLabel("hasta:");
+		label_hasta.setBounds(237, 136, 69, 14);
+		panel.add(label_hasta);
+
+		JTextField textfield_desde = new JTextField();
+		textfield_desde.setBounds(69, 156, 127, 19);
+		panel.add(textfield_desde);
+
+		JTextField textfield_hasta = new JTextField();
+		textfield_hasta.setBounds(223, 156, 127, 19);
+		panel.add(textfield_hasta);
 		
 		JLabel lblEtiqueta = new JLabel("Etiqueta:");
 		lblEtiqueta.setBounds(10, 189, 69, 14);
@@ -140,9 +138,10 @@ public class Monitor {
 		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta1);
 		combobox_etiqueta1.populate(DaoFactory.getEtiquetaDao().getAllItems());
 		
-		JButton btnFiltrar = new JButton("FILTRAR");
-		btnFiltrar.setBounds(20, 224, 438, 23);
-		panel.add(btnFiltrar);
+		JButton botonFiltrar = new JButton("FILTRAR");
+		botonFiltrar.setBounds(20, 224, 438, 23);
+		panel.add(botonFiltrar);
+		botonFiltrar.addActionListener(new FIltrarListener(new JTable(),comboBox_contenido,combobox_contexto,combobox_nene,combobox_categoria,combobox_etiqueta1,textfield_desde,textfield_hasta));
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(10, 280, 964, 333);

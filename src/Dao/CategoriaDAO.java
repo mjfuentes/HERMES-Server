@@ -13,8 +13,18 @@ import java.util.List;
 
 public class CategoriaDAO extends ObservableDAO{
 
-    public Categoria getCategoria(Long categoria_id){
-        //TODO
+    public Categoria getCategoria(Long id){
+        try {
+            String query = prepareGet(id);
+            Connection conexion = ConexionManager.getConexion();
+            Statement statement = conexion.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return new Categoria(resultSet.getString("nombre"), resultSet.getLong("id"));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -32,6 +42,10 @@ public class CategoriaDAO extends ObservableDAO{
             e.printStackTrace();
         }
         return lista;
+    }
+
+    private String prepareGet(Long id){
+        return "SELECT * FROM categoria WHERE ID=" + id;
     }
 
     private String prepareList(){

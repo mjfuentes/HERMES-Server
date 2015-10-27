@@ -2,18 +2,20 @@ package Dao;
 
 import Enums.Contexto;
 import Enums.Contenido;
+import Model.Categoria;
+import Model.Etiqueta;
+import Model.Nene;
 import Model.Notificacion;
 import Utils.ConexionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class NotificacionDAO extends ObservableDAO<Notificacion>{
     public void guardarNotificacion(Notificacion notificacion){
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareInsert(notificacion);
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
@@ -25,15 +27,14 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
 
     private String prepareInsert(Notificacion notificacion){
         return "INSERT INTO NOTIFICACION" +
-                " (contenido, contexto, categoria_id, fecha_envio, fecha_recepcion, nino_id" +
-                " VALUES (" + notificacion.getContenido().toString() + "," + notificacion.getContexto().toString() + "," +
-                notificacion.getCategoria().getId() + "," + notificacion.getFechaEnvio() + "," +
-                notificacion.getFechaRecepcion() + "," + notificacion.getNene().getId() + ")";
+                " (contenido, contexto, categoria_id, fecha_envio, fecha_recepcion, nino_id)" +
+                " VALUES (" + notificacion.getContenido().toInt() + "," + notificacion.getContexto().toInt() + "," +
+                notificacion.getCategoria().getId() + ", '" + notificacion.getFechaEnvio() + "','" +
+                notificacion.getFechaRecepcion() + "'," + notificacion.getNene().getId() + ")";
     }
 
     public Notificacion getNotificacion(Long id){
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             String query = prepareGet(id);
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
@@ -47,11 +48,10 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
         return null;
     }
 
-    public List<Notificacion> getNotificacionesFiltradas(Contenido contenido,Contexto contexto,Long nene_id,Long categoria_id, Long etiqueta_id,Date desde,Date hasta){
+    public List<Notificacion> getNotificacionesFiltradas(Contenido contenido,Contexto contexto, Nene nene,Categoria categoria, Etiqueta etiqueta,String desde,String hasta){
         List<Notificacion> lista = new ArrayList<>();
         try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            String query = prepareFilteredList(contenido, contexto, nene_id, categoria_id, etiqueta_id, desde, hasta);
+            String query = prepareFilteredList(contenido, contexto, nene, categoria, etiqueta, desde, hasta);
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -64,53 +64,53 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
         return lista;
     }
 
-    private String prepareFilteredList(Contenido contenido,Contexto contexto,Long nene_id,Long categoria_id, Long etiqueta_id,Date desde,Date hasta){
+    private String prepareFilteredList(Contenido contenido,Contexto contexto,Nene nene, Categoria categoria, Etiqueta etiqueta,String desde,String hasta){
         Boolean first = true;
         StringBuilder sb = new StringBuilder("SELECT * FROM NOTIFICACION");
-        if (contenido != null || contexto != null || nene_id != null || categoria_id != null || etiqueta_id != null || desde != null || hasta != null) {
+        if (contenido != null || contexto != null || nene != null || categoria != null || etiqueta != null || desde != null || hasta != null) {
             sb.append(" WHERE");
             if (contenido != null) {
-                sb.append(" contenido = ").append(contenido.toString()).append("'");
+                sb.append(" contenido = '").append(contenido.toInt()).append("'");
                 first = false;
             }
             if (contexto != null) {
                 if (!first){
-                    sb.append(" & ");
+                    sb.append(" AND ");
                 }
-                sb.append(" contexto='").append(contexto.toString()).append("'");
+                sb.append(" contexto='").append(contexto.toInt()).append("'");
                 first = false;
             }
-            if (nene_id != null) {
+            if (nene != null) {
                 if (!first){
-                    sb.append(" & ");
+                    sb.append(" AND ");
                 }
-                sb.append(" nino_id =").append(nene_id.toString());
+                sb.append(" nino_id =").append(nene.getId());
                 first = false;
             }
-            if (categoria_id != null) {
+            if (categoria != null) {
                 if (!first){
-                    sb.append(" & ");
+                    sb.append(" AND ");
                 }
-                sb.append(" categoria_id =").append(categoria_id.toString());
+                sb.append(" categoria_id =").append(categoria.getId().toString());
                 first = false;
             }
-            if (etiqueta_id != null) {
+            if (etiqueta != null) {
                 if (!first){
-                    sb.append(" & ");
+                    sb.append(" AND ");
                 }
-                sb.append(" etiqueta_id =").append(etiqueta_id.toString());
+                sb.append(" etiqueta_id =").append(etiqueta.getId().toString());
                 first = false;
             }
-            if (desde != null) {
+            if (!Objects.equals(desde, "")) {
                 if (!first){
-                    sb.append(" & ");
+                    sb.append(" AND ");
                 }
                 sb.append(" fecha_envio > '").append(desde.toString()).append("'");
                 first = false;
             }
-            if (hasta != null) {
+            if (!Objects.equals(hasta, "")) {
                 if (!first){
-                    sb.append(" & ");
+                    sb.append(" AND ");
                 }
                 sb.append(" fecha_envio < '").append(hasta.toString()).append("'");
             }
