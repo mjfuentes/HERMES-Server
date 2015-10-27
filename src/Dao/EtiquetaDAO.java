@@ -1,15 +1,11 @@
 package Dao;
 
-import Interfaz.Monitor;
 import Model.Etiqueta;
-import Model.Notificacion;
 import Utils.ConexionManager;
-import javafx.beans.InvalidationListener;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
 

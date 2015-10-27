@@ -1,10 +1,10 @@
 package Enums;
 
-public enum Contexto {
-    Establo(1),Terapia(2),Pista(3),Hogar(4);
-    int number;
+public enum Contenido {
+    Entusiasmado(1), Alegre(2), Molesto(3);
 
-    Contexto(int number){
+    int number;
+    Contenido(int number){
         this.number = number;
     }
 

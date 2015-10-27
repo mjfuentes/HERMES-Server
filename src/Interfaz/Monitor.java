@@ -1,9 +1,11 @@
 package Interfaz;
 
 import Dao.DaoFactory;
+import Enums.Contexto;
 import Listener.EtiquetaAddListener;
 import Listener.EtiquetaDeleteListener;
 import Listener.EtiquetaRenameListener;
+import Enums.Contenido;
 import Utils.ObserverCombobox;
 
 import java.awt.EventQueue;
@@ -64,37 +66,49 @@ public class Monitor {
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblContenido = new JLabel("Contenido:");
-		lblContenido.setBounds(10, 11, 58, 14);
-		panel.add(lblContenido);
+		JLabel label_contenido = new JLabel("Contenido:");
+		label_contenido.setBounds(10, 11, 58, 14);
+		panel.add(label_contenido);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(69, 9, 127, 19);
-		panel.add(comboBox);
+		JComboBox comboBox_contenido = new JComboBox();
+		comboBox_contenido.setBounds(69, 9, 127, 19);
+		panel.add(comboBox_contenido);
+		comboBox_contenido.addItem(Contenido.Alegre);
+		comboBox_contenido.addItem(Contenido.Entusiasmado);
+		comboBox_contenido.addItem(Contenido.Molesto);
+
+
+		JLabel label_contexto = new JLabel("Contexto:");
+		label_contexto.setBounds(10, 44, 58, 14);
+		panel.add(label_contexto);
 		
-		JLabel label = new JLabel("Contenido:");
-		label.setBounds(10, 44, 58, 14);
-		panel.add(label);
+		ObserverCombobox combobox_contexto = new ObserverCombobox();
+		combobox_contexto.setBounds(69, 41, 127, 19);
+		panel.add(combobox_contexto);
+		combobox_contexto.addItem(Contexto.Establo);
+		combobox_contexto.addItem(Contexto.Pista);
+		combobox_contexto.addItem(Contexto.Hogar);
+		combobox_contexto.addItem(Contexto.Terapia);
+
+		ObserverCombobox combobox_categoria = new ObserverCombobox();
+		combobox_categoria.setBounds(282, 42, 127, 19);
+		panel.add(combobox_categoria);
+		DaoFactory.getCategoriaDao().addObserver(combobox_categoria);
+		combobox_categoria.populate(DaoFactory.getCategoriaDao().getCategorias());
+
+		JLabel label_categoria = new JLabel("Categor\u00EDa:");
+		label_categoria.setBounds(223, 44, 58, 14);
+		panel.add(label_categoria);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(69, 41, 127, 19);
-		panel.add(comboBox_1);
-		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(282, 42, 127, 19);
-		panel.add(comboBox_2);
-		
-		JLabel lblCategora = new JLabel("Categor\u00EDa:");
-		lblCategora.setBounds(223, 44, 58, 14);
-		panel.add(lblCategora);
-		
-		JLabel lblNi = new JLabel("Ni\u00F1@:");
-		lblNi.setBounds(10, 75, 46, 14);
-		panel.add(lblNi);
-		
-		JComboBox comboBox_3 = new JComboBox();
-		comboBox_3.setBounds(69, 75, 127, 19);
-		panel.add(comboBox_3);
+		JLabel label_nene = new JLabel("Ni\u00F1@:");
+		label_nene.setBounds(10, 75, 46, 14);
+		panel.add(label_nene);
+
+		ObserverCombobox combobox_nene = new ObserverCombobox();
+		combobox_nene.setBounds(69, 75, 127, 19);
+		panel.add(combobox_nene);
+		DaoFactory.getNeneDao().addObserver(combobox_nene);
+		combobox_nene.populate(DaoFactory.getNeneDao().getNenes());
 		
 		JLabel lblFechaHora = new JLabel("Fecha / Hora");
 		lblFechaHora.setBounds(10, 116, 69, 14);
@@ -120,9 +134,11 @@ public class Monitor {
 		lblEtiqueta.setBounds(10, 189, 69, 14);
 		panel.add(lblEtiqueta);
 		
-		JComboBox comboBox_6 = new JComboBox();
-		comboBox_6.setBounds(69, 187, 127, 19);
-		panel.add(comboBox_6);
+		ObserverCombobox combobox_etiqueta1 = new ObserverCombobox();
+		combobox_etiqueta1.setBounds(69, 187, 127, 19);
+		panel.add(combobox_etiqueta1);
+		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta1);
+		combobox_etiqueta1.populate(DaoFactory.getEtiquetaDao().getAllItems());
 		
 		JButton btnFiltrar = new JButton("FILTRAR");
 		btnFiltrar.setBounds(20, 224, 438, 23);
@@ -162,26 +178,26 @@ public class Monitor {
 		
 
 
-		ObserverCombobox comboBox_7 = new ObserverCombobox();
-		comboBox_7.setBounds(123, 61, 207, 20);
-		panel_2.add(comboBox_7);
-		DaoFactory.getEtiquetaDao().addObserver(comboBox_7);
-		comboBox_7.populate(DaoFactory.getEtiquetaDao().getAllItems());
+		ObserverCombobox combobox_etiqueta2 = new ObserverCombobox();
+		combobox_etiqueta2.setBounds(123, 61, 207, 20);
+		panel_2.add(combobox_etiqueta2);
+		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta2);
+		combobox_etiqueta2.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
 		JButton btnEliminar = new JButton("ELIMINAR");
 		btnEliminar.setBounds(340, 60, 89, 23);
 		panel_2.add(btnEliminar);
-		btnEliminar.addActionListener(new EtiquetaDeleteListener(comboBox_7));
+		btnEliminar.addActionListener(new EtiquetaDeleteListener(combobox_etiqueta2));
 
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(34, 100, 381, 14);
 		panel_2.add(separator_1);
 
-		ObserverCombobox comboBox_8 = new ObserverCombobox();
-		comboBox_8.setBounds(123, 117, 207, 20);
-		panel_2.add(comboBox_8);
-		DaoFactory.getEtiquetaDao().addObserver(comboBox_8);
-		comboBox_8.populate(DaoFactory.getEtiquetaDao().getAllItems());
+		ObserverCombobox combobox_etiqueta3 = new ObserverCombobox();
+		combobox_etiqueta3.setBounds(123, 117, 207, 20);
+		panel_2.add(combobox_etiqueta3);
+		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta3);
+		combobox_etiqueta3.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
 
 		JLabel lblAsignarEtiqueta = new JLabel("Asignar Etiqueta:");
@@ -200,11 +216,11 @@ public class Monitor {
 		lblRenombrarEtiqueta.setBounds(10, 174, 101, 14);
 		panel_2.add(lblRenombrarEtiqueta);
 
-		ObserverCombobox comboBox_9 = new ObserverCombobox();
-		comboBox_9.setBounds(123, 171, 207, 20);
-		panel_2.add(comboBox_9);
-		DaoFactory.getEtiquetaDao().addObserver(comboBox_9);
-		comboBox_9.populate(DaoFactory.getEtiquetaDao().getAllItems());
+		ObserverCombobox combobox_etiqueta4 = new ObserverCombobox();
+		combobox_etiqueta4.setBounds(123, 171, 207, 20);
+		panel_2.add(combobox_etiqueta4);
+		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta4);
+		combobox_etiqueta4.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
 
 		JLabel lblNuevoNombre = new JLabel("Nuevo Nombre:");
@@ -218,7 +234,7 @@ public class Monitor {
 		JButton btnRenombrar = new JButton("RENOMBRAR");
 		btnRenombrar.setBounds(340, 213, 105, 23);
 		panel_2.add(btnRenombrar);
-		btnRenombrar.addActionListener(new EtiquetaRenameListener(comboBox_7, textField_1));
+		btnRenombrar.addActionListener(new EtiquetaRenameListener(combobox_etiqueta4, textField_1));
 
 		panel_2.add(textField_1);
 	}

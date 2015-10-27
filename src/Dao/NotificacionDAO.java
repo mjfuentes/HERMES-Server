@@ -1,7 +1,7 @@
 package Dao;
 
 import Enums.Contexto;
-import Model.Contenido;
+import Enums.Contenido;
 import Model.Notificacion;
 import Utils.ConexionManager;
 

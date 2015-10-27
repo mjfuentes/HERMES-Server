@@ -2,7 +2,7 @@ package Service;
 
 import Dao.DaoFactory;
 import Enums.Contexto;
-import Model.Contenido;
+import Enums.Contenido;
 import Model.Notificacion;
 
 import java.util.Date;

@@ -10,18 +10,12 @@ public class ObserverCombobox extends JComboBox implements Observer {
     public void update(Observable o, Object arg) {
         ObservableDAO dao = (ObservableDAO) o;
         this.removeAllItems();
-        List<Object> list = dao.getAllItems();
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()){
-            this.addItem(iterator.next());
-        }
+        List list = dao.getAllItems();
+        list.forEach(this::addItem);
     }
 
     public void populate(List list) {
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()) {
-            this.addItem(iterator.next());
-        }
+        list.forEach(this::addItem);
     }
 
 }
