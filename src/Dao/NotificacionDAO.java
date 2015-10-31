@@ -29,8 +29,8 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
         return "INSERT INTO NOTIFICACION" +
                 " (contenido, contexto, categoria_id, fecha_envio, fecha_recepcion, nino_id)" +
                 " VALUES (" + notificacion.getContenido().toInt() + "," + notificacion.getContexto().toInt() + "," +
-                notificacion.getCategoria().getId() + ", '" + notificacion.getFechaEnvio() + "','" +
-                notificacion.getFechaRecepcion() + "'," + notificacion.getNene().getId() + ")";
+                notificacion.getCategoria().getId() + ", '" + notificacion.getFechaEnvio().toString() + "','" +
+                notificacion.getFechaRecepcion().toString() + "'," + notificacion.getNene().getId() + ")";
     }
 
     public Notificacion getNotificacion(Long id){
@@ -40,7 +40,7 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                return new Notificacion(resultSet.getLong("id"),Contenido.valueOf(resultSet.getString("contenido")), Contexto.valueOf(String.valueOf(resultSet.getInt("contexto"))),resultSet.getLong("categoria_id"),resultSet.getDate("fecha_envio"),resultSet.getDate("fecha_recepcion"),resultSet.getLong("nino_id"));
+                return new Notificacion(resultSet.getLong("id"),Contenido.valueOf(resultSet.getString("contenido")), Contexto.valueOf(String.valueOf(resultSet.getInt("contexto"))),resultSet.getLong("categoria_id"),resultSet.getDate("fecha_envio"),resultSet.getDate("fecha_recepcion"),resultSet.getLong("nino_id"),resultSet.getLong("etiqueta_id"));
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -56,7 +56,23 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                lista.add(new Notificacion(resultSet.getLong("id"),Contenido.valueOf(resultSet.getString("contenido")), Contexto.valueOf(String.valueOf(resultSet.getInt("contexto"))),resultSet.getLong("categoria_id"),resultSet.getDate("fecha_envio"),resultSet.getDate("fecha_recepcion"),resultSet.getLong("nino_id")));
+                lista.add(new Notificacion(resultSet.getLong("id"),Contenido.fromInt(resultSet.getInt("contenido")), Contexto.fromInt(resultSet.getInt(resultSet.getInt("contexto"))),resultSet.getLong("categoria_id"),Date.valueOf(resultSet.getString("fecha_envio")), Date.valueOf(resultSet.getString("fecha_recepcion")), resultSet.getLong("nino_id"),resultSet.getLong("etiqueta_id")));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public List<Notificacion> getNotificaciones(){
+        List<Notificacion> lista = new ArrayList<>();
+        try {
+            String query = prepareGetAll();
+            Connection conexion = ConexionManager.getConexion();
+            Statement statement = conexion.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                lista.add(new Notificacion(resultSet.getLong("id"),Contenido.fromInt(resultSet.getInt("contenido")), Contexto.fromInt(resultSet.getInt("contexto")),resultSet.getLong("categoria_id"),Date.valueOf(resultSet.getString("fecha_envio")),Date.valueOf(resultSet.getString("fecha_recepcion")),resultSet.getLong("nino_id"),resultSet.getLong("etiqueta_id")));
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -67,10 +83,10 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
     private String prepareFilteredList(Contenido contenido,Contexto contexto,Nene nene, Categoria categoria, Etiqueta etiqueta,String desde,String hasta){
         Boolean first = true;
         StringBuilder sb = new StringBuilder("SELECT * FROM NOTIFICACION");
-        if (contenido != null || contexto != null || nene != null || categoria != null || etiqueta != null || desde != null || hasta != null) {
+        if (contenido != null || contexto != null || nene != null || categoria != null || etiqueta != null || !desde.equals("") || !hasta.equals("")) {
             sb.append(" WHERE");
             if (contenido != null) {
-                sb.append(" contenido = '").append(contenido.toInt()).append("'");
+                sb.append(" contenido = ").append(contenido.toInt());
                 first = false;
             }
             if (contexto != null) {
@@ -122,8 +138,10 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
         return "SELECT * FROM NOTIFICACION WHERE ID="+id;
     }
 
+    private String prepareGetAll(){ return "SELECT * FROM NOTIFICACION";}
+
     @Override
     public List<Notificacion> getAllItems() {
-        return null;
+        return getNotificaciones();
     }
 }

@@ -11,4 +11,13 @@ public enum Contexto {
     public int toInt(){
         return this.number;
     }
+
+    public static Contexto fromInt(Integer num){
+        for (Contexto contexto : Contexto.values()) {
+            if (contexto.toInt() == num){
+                return contexto;
+            }
+        }
+        return null;
+    }
 }

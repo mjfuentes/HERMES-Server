@@ -2,7 +2,8 @@ package Model;
 import Dao.DaoFactory;
 import Enums.*;
 
-import java.util.Date;
+import java.sql.Date;
+
 
 public class Notificacion {
     private Contenido contenido;
@@ -16,7 +17,7 @@ public class Notificacion {
 
     public Notificacion(){}
 
-    public Notificacion(Long id, Contenido contenido, Contexto contexto, Long categoria_id, Date fecha_envio, Date fecha_recepcion, Long nene_id){
+    public Notificacion(Long id, Contenido contenido, Contexto contexto, Long categoria_id, Date fecha_envio, Date fecha_recepcion, Long nene_id, Long etiqueta_id){
         this.setId(id);
         this.setContenido(contenido);
         this.setContexto(contexto);
@@ -24,6 +25,7 @@ public class Notificacion {
         this.setFecha_envio(fecha_envio);
         this.setFecha_recepcion(fecha_recepcion);
         this.setNene_id(nene_id);
+        this.setEtiqueta_id(etiqueta_id);
     }
 
     public Notificacion(Contenido contenido, Contexto contexto, Long categoria_id, Date fecha_envio, Date fecha_recepcion, Long nene_id){

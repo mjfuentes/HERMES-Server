@@ -8,6 +8,7 @@ import Model.Nene;
 import Model.Notificacion;
 import Service.NotificacionService;
 import Utils.ObserverCombobox;
+import Utils.Tabla;
 
 import javax.naming.Context;
 import javax.swing.*;
@@ -17,7 +18,7 @@ import java.sql.Date;
 import java.util.List;
 
 public class FIltrarListener implements ActionListener {
-    private JTable table;
+    private Tabla tabla;
     private ObserverCombobox comboboxContenido;
     private ObserverCombobox comboboxContexto;
     private ObserverCombobox comboboxNene;
@@ -26,8 +27,8 @@ public class FIltrarListener implements ActionListener {
     private JTextField textoDesde;
     private JTextField textoHasta;
 
-    public FIltrarListener(JTable table, ObserverCombobox comboboxContenido, ObserverCombobox comboboxContexto, ObserverCombobox comboboxNene, ObserverCombobox comboboxCategoria, ObserverCombobox comboboxEtiqueta, JTextField desde, JTextField hasta){
-        this.table = table;
+    public FIltrarListener(Tabla tabla, ObserverCombobox comboboxContenido, ObserverCombobox comboboxContexto, ObserverCombobox comboboxNene, ObserverCombobox comboboxCategoria, ObserverCombobox comboboxEtiqueta, JTextField desde, JTextField hasta){
+        this.tabla = tabla;
         this.comboboxContenido = comboboxContenido;
         this.comboboxContexto = comboboxContexto;
         this.comboboxNene = comboboxNene;
@@ -40,6 +41,7 @@ public class FIltrarListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         List<Notificacion> lista = NotificacionService.getInstance().filtrar((Contenido) comboboxContenido.getSelectedItem(),(Contexto) comboboxContexto.getSelectedItem(),(Nene) comboboxNene.getSelectedItem(),(Categoria) comboboxCategoria.getSelectedItem(),(Etiqueta) comboboxEtiqueta.getSelectedItem(), textoDesde.getText(),textoHasta.getText());
+        tabla.setItems(lista);
     }
 
 }

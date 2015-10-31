@@ -11,4 +11,13 @@ public enum Contenido {
     public int toInt(){
         return this.number;
     }
+
+    public static Contenido fromInt(Integer num){
+        for (Contenido contenido : Contenido.values()) {
+            if (contenido.toInt() == num){
+                return contenido;
+            }
+        }
+        return null;
+    }
 }

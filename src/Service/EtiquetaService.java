@@ -2,6 +2,7 @@ package Service;
 
 import Dao.DaoFactory;
 import Model.Etiqueta;
+import Model.Notificacion;
 
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class EtiquetaService {
             instance = new EtiquetaService();
         }
         return instance;
+    }
+
+    public void asignarEtiqueta(List<Notificacion> notificaciones, Etiqueta etiqueta){
+        DaoFactory.getEtiquetaDao().asignarEtiqueta(notificaciones, etiqueta);
     }
 
     public void crearEtiqueta(String nombre){

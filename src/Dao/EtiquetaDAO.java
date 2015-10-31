@@ -1,10 +1,12 @@
 package Dao;
 
 import Model.Etiqueta;
+import Model.Notificacion;
 import Utils.ConexionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
@@ -79,6 +81,22 @@ public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
         }
     }
 
+    public void asignarEtiqueta(List<Notificacion> notificaciones, Etiqueta etiqueta){
+        try {
+            Connection conexion = ConexionManager.getConexion();
+            for(Iterator<Notificacion> i = notificaciones.iterator(); i.hasNext(); ) {
+                Notificacion notificacion = i.next();
+                String query = prepareAsignar(notificacion.getId(), etiqueta.getId());
+                Statement statement = conexion.createStatement();
+                statement.executeUpdate(query);
+            }
+            this.setChanged();
+            this.notifyObservers();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     private String prepareRename(String nombre, Long id){
         return "UPDATE etiqueta SET nombre = '" + nombre + "' WHERE ID=" + id;
     }
@@ -96,6 +114,12 @@ public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
         return "INSERT INTO etiqueta" +
                 " (nombre)" +
                 " VALUES ('" + nombre + "')";
+    }
+
+    private String prepareAsignar(Long notificacion_id, Long etiqueta_id){
+        return "UPDATE notificacion" +
+                " SET etiqueta_id = " + etiqueta_id +
+                " WHERE id = " + notificacion_id;
     }
 
     private String prepareList(){

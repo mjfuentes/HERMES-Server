@@ -2,27 +2,20 @@ package Interfaz;
 
 import Dao.DaoFactory;
 import Enums.Contexto;
-import Listener.EtiquetaAddListener;
-import Listener.EtiquetaDeleteListener;
-import Listener.EtiquetaRenameListener;
+import Listener.*;
 import Enums.Contenido;
-import Listener.FIltrarListener;
+import Utils.CurrentSearch;
 import Utils.JsonFromFileReader;
 import Utils.ObserverCombobox;
+import Utils.Tabla;
 
 import java.awt.EventQueue;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 import java.awt.Color;
-import java.awt.List;
-import javax.swing.table.DefaultTableModel;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Font;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.LineBorder;
 
 public class Monitor {
 
@@ -30,6 +23,7 @@ public class Monitor {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTable table;
+	private JTable tabla;
 	/**
 	 * Launch the application.
 	 */
@@ -61,209 +55,211 @@ public class Monitor {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBackground(Color.WHITE);
-		frame.setBounds(100, 100, 1000, 663);
+		frame.setBounds(100, 100, 1200, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+		frame.setResizable(false);
+
+		CurrentSearch search = new CurrentSearch();
+		DaoFactory.getEtiquetaDao().addObserver(search);
+		DaoFactory.getNeneDao().addObserver(search);
+		DaoFactory.getCategoriaDao().addObserver(search);
+
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 489, 258);
+		panel.setBorder(new TitledBorder(null, "Filtros", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(12, 0, 578, 286);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel label_contenido = new JLabel("Contenido:");
-		label_contenido.setBounds(10, 11, 58, 14);
+		label_contenido.setBounds(31, 28, 100, 14);
 		panel.add(label_contenido);
 		
 		ObserverCombobox comboBox_contenido = new ObserverCombobox();
-		comboBox_contenido.setBounds(69, 9, 127, 19);
+		comboBox_contenido.setBounds(143, 25, 180, 20);
 		panel.add(comboBox_contenido);
+		comboBox_contenido.addItem(null);
 		comboBox_contenido.addItem(Contenido.Alegre);
 		comboBox_contenido.addItem(Contenido.Entusiasmado);
 		comboBox_contenido.addItem(Contenido.Molesto);
 
 
 		JLabel label_contexto = new JLabel("Contexto:");
-		label_contexto.setBounds(10, 44, 58, 14);
+		label_contexto.setBounds(31, 61, 100, 14);
 		panel.add(label_contexto);
 		
 		ObserverCombobox combobox_contexto = new ObserverCombobox();
-		combobox_contexto.setBounds(69, 41, 127, 19);
+		combobox_contexto.setBounds(143, 57, 180, 20);
 		panel.add(combobox_contexto);
+		combobox_contexto.addItem(null);
 		combobox_contexto.addItem(Contexto.Establo);
 		combobox_contexto.addItem(Contexto.Pista);
 		combobox_contexto.addItem(Contexto.Hogar);
 		combobox_contexto.addItem(Contexto.Terapia);
 
 		ObserverCombobox combobox_categoria = new ObserverCombobox();
-		combobox_categoria.setBounds(282, 42, 127, 19);
+		combobox_categoria.setBounds(143, 124, 180, 20);
 		panel.add(combobox_categoria);
+		combobox_categoria.addItem(null);
 		DaoFactory.getCategoriaDao().addObserver(combobox_categoria);
 		combobox_categoria.populate(DaoFactory.getCategoriaDao().getCategorias());
 
 		JLabel label_categoria = new JLabel("Categor\u00EDa:");
-		label_categoria.setBounds(223, 44, 58, 14);
+		label_categoria.setBounds(31, 127, 100, 14);
 		panel.add(label_categoria);
 		
 		JLabel label_nene = new JLabel("Ni\u00F1@:");
-		label_nene.setBounds(10, 75, 46, 14);
+		label_nene.setBounds(31, 92, 46, 14);
 		panel.add(label_nene);
 
 		ObserverCombobox combobox_nene = new ObserverCombobox();
-		combobox_nene.setBounds(69, 75, 127, 19);
+		combobox_nene.setBounds(143, 90, 180, 20);
 		panel.add(combobox_nene);
 		DaoFactory.getNeneDao().addObserver(combobox_nene);
+		combobox_nene.addItem(null);
 		combobox_nene.populate(DaoFactory.getNeneDao().getNenes());
 		
 		JLabel lblFechaHora = new JLabel("Fecha / Hora");
-		lblFechaHora.setBounds(10, 116, 69, 14);
+		lblFechaHora.setBounds(31, 159, 100, 14);
 		panel.add(lblFechaHora);
 		
 		JLabel label_desde = new JLabel("desde:");
-		label_desde.setBounds(89, 136, 69, 14);
+		label_desde.setBounds(143, 159, 69, 14);
 		panel.add(label_desde);
 		
 		JLabel label_hasta = new JLabel("hasta:");
-		label_hasta.setBounds(237, 136, 69, 14);
+		label_hasta.setBounds(336, 159, 69, 14);
 		panel.add(label_hasta);
 
 		JTextField textfield_desde = new JTextField();
-		textfield_desde.setBounds(69, 156, 127, 19);
+		textfield_desde.setBounds(196, 156, 127, 19);
 		panel.add(textfield_desde);
 
 		JTextField textfield_hasta = new JTextField();
-		textfield_hasta.setBounds(223, 156, 127, 19);
+		textfield_hasta.setBounds(387, 156, 127, 19);
 		panel.add(textfield_hasta);
 		
 		JLabel lblEtiqueta = new JLabel("Etiqueta:");
-		lblEtiqueta.setBounds(10, 189, 69, 14);
+		lblEtiqueta.setBounds(31, 188, 69, 14);
 		panel.add(lblEtiqueta);
 		
 		ObserverCombobox combobox_etiqueta1 = new ObserverCombobox();
-		combobox_etiqueta1.setBounds(69, 187, 127, 19);
+		combobox_etiqueta1.setBounds(143, 185, 180, 20);
 		panel.add(combobox_etiqueta1);
+		combobox_etiqueta1.addItem(null);
 		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta1);
 		combobox_etiqueta1.populate(DaoFactory.getEtiquetaDao().getAllItems());
+
+		JScrollPane scrollPane = new JScrollPane();
+		Tabla model = new Tabla(DaoFactory.getNotificacionDAO().getAllItems());
+		tabla = new JTable(model);
+		model.setTabla(tabla);
+		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 3));
+		scrollPane.setBounds(44, 326, 1108, 416);
+		scrollPane.setViewportView(tabla);
+		search.addObserver(model);
+		frame.getContentPane().add(scrollPane);
 		
 		JButton botonFiltrar = new JButton("FILTRAR");
-		botonFiltrar.setBounds(20, 224, 438, 23);
+		botonFiltrar.setBounds(54, 232, 438, 23);
 		panel.add(botonFiltrar);
-		botonFiltrar.addActionListener(new FIltrarListener(new JTable(), comboBox_contenido, combobox_contexto, combobox_nene, combobox_categoria, combobox_etiqueta1, textfield_desde, textfield_hasta));
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(10, 280, 964, 333);
-		frame.getContentPane().add(panel_1);
-		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
-		
-		table = new JTable();
-		table.setBorder(null);
-		table.setFont(new Font("Dialog", Font.PLAIN, 17));
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
-				{null, null, null, null, null, null},
-			},
-			new String[] {
-				"Fecha/Hora", "Contenido", "Contexto", "Categoria", "Niñ@", "Etiquetas"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, Object.class, Object.class, Object.class, Object.class, Object.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		panel_1.add(table);
+		botonFiltrar.addActionListener(new FIltrarListener(model, comboBox_contenido, combobox_contexto, combobox_nene, combobox_categoria, combobox_etiqueta1, textfield_desde, textfield_hasta));
+
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(519, 11, 455, 258);
+		panel_2.setBorder(new TitledBorder(null, "Etiquetas", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_2.setBounds(602, 0, 586, 287);
 		frame.getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
 		JLabel lblCrearEtiqueta = new JLabel("Crear Etiqueta:");
-		lblCrearEtiqueta.setBounds(10, 15, 80, 14);
+		lblCrearEtiqueta.setBounds(12, 32, 207, 14);
 		panel_2.add(lblCrearEtiqueta);
 		
 		textField = new JTextField();
-		textField.setBounds(123, 12, 207, 20);
+		textField.setBounds(252, 26, 207, 20);
 		panel_2.add(textField);
 		textField.setColumns(10);
 		
 		JButton btnCrear = new JButton("CREAR");
-		btnCrear.setBounds(340, 11, 89, 23);
+		btnCrear.setBounds(471, 26, 89, 23);
 		panel_2.add(btnCrear);
 
 		btnCrear.addActionListener(new EtiquetaAddListener(textField));
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(34, 47, 381, 14);
+		separator.setBounds(36, 58, 462, 14);
 		panel_2.add(separator);
 		
 		JLabel lblEliminarEtiqueta = new JLabel("Eliminar Etiqueta:");
-		lblEliminarEtiqueta.setBounds(10, 64, 89, 14);
+		lblEliminarEtiqueta.setBounds(12, 81, 207, 14);
 		panel_2.add(lblEliminarEtiqueta);
 
 		ObserverCombobox combobox_etiqueta2 = new ObserverCombobox();
-		combobox_etiqueta2.setBounds(123, 61, 207, 20);
+		combobox_etiqueta2.setBounds(252, 75, 207, 20);
 		panel_2.add(combobox_etiqueta2);
 		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta2);
 		combobox_etiqueta2.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
 		JButton btnEliminar = new JButton("ELIMINAR");
-		btnEliminar.setBounds(340, 60, 89, 23);
+		btnEliminar.setBounds(471, 75, 89, 23);
 		panel_2.add(btnEliminar);
 		btnEliminar.addActionListener(new EtiquetaDeleteListener(combobox_etiqueta2));
 
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(34, 100, 381, 14);
+		separator_1.setBounds(36, 117, 462, 14);
 		panel_2.add(separator_1);
 
-		ObserverCombobox combobox_etiqueta3 = new ObserverCombobox();
-		combobox_etiqueta3.setBounds(123, 117, 207, 20);
-		panel_2.add(combobox_etiqueta3);
-		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta3);
-		combobox_etiqueta3.populate(DaoFactory.getEtiquetaDao().getAllItems());
-
+		ObserverCombobox combobox_asignar = new ObserverCombobox();
+		combobox_asignar.setBounds(252, 131, 207, 20);
+		panel_2.add(combobox_asignar);
+		DaoFactory.getEtiquetaDao().addObserver(combobox_asignar);
+		combobox_asignar.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
 		JLabel lblAsignarEtiqueta = new JLabel("Asignar Etiqueta:");
-		lblAsignarEtiqueta.setBounds(10, 120, 89, 14);
+		lblAsignarEtiqueta.setBounds(12, 137, 207, 14);
 		panel_2.add(lblAsignarEtiqueta);
 		
 		JButton btnAsignar = new JButton("ASIGNAR");
-		btnAsignar.setBounds(340, 116, 89, 23);
+		btnAsignar.setBounds(471, 131, 89, 23);
+		btnAsignar.addActionListener(new EtiquetaAssignListener(combobox_asignar, tabla));
 		panel_2.add(btnAsignar);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(34, 156, 381, 14);
+		separator_2.setBounds(36, 173, 462, 14);
 		panel_2.add(separator_2);
 		
 		JLabel lblRenombrarEtiqueta = new JLabel("Renombrar Etiqueta:");
-		lblRenombrarEtiqueta.setBounds(10, 174, 101, 14);
+		lblRenombrarEtiqueta.setBounds(12, 191, 207, 14);
 		panel_2.add(lblRenombrarEtiqueta);
 
-		ObserverCombobox combobox_etiqueta4 = new ObserverCombobox();
-		combobox_etiqueta4.setBounds(123, 171, 207, 20);
-		panel_2.add(combobox_etiqueta4);
-		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta4);
-		combobox_etiqueta4.populate(DaoFactory.getEtiquetaDao().getAllItems());
+		ObserverCombobox combobox_renombrar = new ObserverCombobox();
+		combobox_renombrar.setBounds(252, 185, 207, 20);
+		panel_2.add(combobox_renombrar);
+		DaoFactory.getEtiquetaDao().addObserver(combobox_renombrar);
+		combobox_renombrar.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
 
 		JLabel lblNuevoNombre = new JLabel("Nuevo Nombre:");
-		lblNuevoNombre.setBounds(10, 217, 101, 14);
+		lblNuevoNombre.setBounds(12, 243, 193, 14);
 		panel_2.add(lblNuevoNombre);
 
 		textField_1 = new JTextField();
 		textField_1.setColumns(10);
-		textField_1.setBounds(123, 214, 207, 20);
+		textField_1.setBounds(252, 237, 207, 20);
 		
 		JButton btnRenombrar = new JButton("RENOMBRAR");
-		btnRenombrar.setBounds(340, 213, 105, 23);
+		btnRenombrar.setBounds(471, 237, 105, 23);
 		panel_2.add(btnRenombrar);
-		btnRenombrar.addActionListener(new EtiquetaRenameListener(combobox_etiqueta4, textField_1));
+		btnRenombrar.addActionListener(new EtiquetaRenameListener(combobox_renombrar, textField_1));
 
 		panel_2.add(textField_1);
+		
+		JSeparator separator_3 = new JSeparator();
+		separator_3.setBounds(46, 220, 462, 14);
+		panel_2.add(separator_3);
+
+
+
 	}
 }
