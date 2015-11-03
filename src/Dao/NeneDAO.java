@@ -25,8 +25,40 @@ public class NeneDAO extends ObservableDAO{
         return null;
     }
 
+    public Nene getOrCreate(String name){
+        try {
+            String query = prepareGet(name);
+            Connection conexion = ConexionManager.getConexion();
+            Statement statement = conexion.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return new Nene(resultSet.getString("nombre"),resultSet.getLong("id"));
+            } else {
+                String insert = prepareInsert(name);
+                statement = conexion.createStatement();
+                statement.executeUpdate(insert);
+                statement = conexion.createStatement();
+                resultSet = statement.executeQuery("SELECT last_insert_rowid()");
+                if (resultSet.next()){
+                    return new Nene(name, (long) resultSet.getLong(1));
+                }
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private String prepareGet(Long id){
         return "SELECT * FROM nene WHERE ID="+id;
+    }
+
+    private String prepareGet(String name){
+        return "SELECT * FROM nene WHERE nombre='"+ name + "'";
+    }
+
+    private String prepareInsert(String name){
+        return "INSERT INTO nene (nombre) values ('"+ name + "')";
     }
 
     public List getNenes() {

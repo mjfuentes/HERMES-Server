@@ -1,14 +1,13 @@
 package Service;
 
 import Dao.DaoFactory;
-import Enums.Contexto;
+import Model.Contexto;
 import Enums.Contenido;
 import Model.Categoria;
 import Model.Etiqueta;
 import Model.Nene;
 import Model.Notificacion;
 
-import java.util.Date;
 import java.util.List;
 
 public class NotificacionService {

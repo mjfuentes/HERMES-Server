@@ -1,18 +1,14 @@
 package Interfaz;
 
 import Dao.DaoFactory;
-import Enums.Contexto;
+import Model.Contexto;
 import Listener.*;
 import Enums.Contenido;
-import Utils.CurrentSearch;
-import Utils.JsonFromFileReader;
-import Utils.ObserverCombobox;
-import Utils.Tabla;
+import Utils.*;
 
 import java.awt.EventQueue;
 
 import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.Color;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
@@ -22,7 +18,6 @@ public class Monitor {
 	private JFrame frame;
 	private JTextField textField;
 	private JTextField textField_1;
-	private JTable table;
 	private JTable tabla;
 	/**
 	 * Launch the application.
@@ -31,9 +26,9 @@ public class Monitor {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Monitor window = new Monitor();
 					JsonFromFileReader reader = new JsonFromFileReader();
-					reader.read("datos");
+					reader.read(System.getProperty("user.home") + "/datos");
+					Monitor window = new Monitor();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -75,7 +70,7 @@ public class Monitor {
 		label_contenido.setBounds(31, 28, 100, 14);
 		panel.add(label_contenido);
 		
-		ObserverCombobox comboBox_contenido = new ObserverCombobox();
+		ObserverCombobox comboBox_contenido = new ObserverCombobox(true);
 		comboBox_contenido.setBounds(143, 25, 180, 20);
 		panel.add(comboBox_contenido);
 		comboBox_contenido.addItem(null);
@@ -88,16 +83,13 @@ public class Monitor {
 		label_contexto.setBounds(31, 61, 100, 14);
 		panel.add(label_contexto);
 		
-		ObserverCombobox combobox_contexto = new ObserverCombobox();
+		ObserverCombobox combobox_contexto = new ObserverCombobox(true);
 		combobox_contexto.setBounds(143, 57, 180, 20);
 		panel.add(combobox_contexto);
 		combobox_contexto.addItem(null);
-		combobox_contexto.addItem(Contexto.Establo);
-		combobox_contexto.addItem(Contexto.Pista);
-		combobox_contexto.addItem(Contexto.Hogar);
-		combobox_contexto.addItem(Contexto.Terapia);
+		combobox_contexto.populate(DaoFactory.getContextoDao().getContextos());
 
-		ObserverCombobox combobox_categoria = new ObserverCombobox();
+		ObserverCombobox combobox_categoria = new ObserverCombobox(true);
 		combobox_categoria.setBounds(143, 124, 180, 20);
 		panel.add(combobox_categoria);
 		combobox_categoria.addItem(null);
@@ -112,39 +104,39 @@ public class Monitor {
 		label_nene.setBounds(31, 92, 46, 14);
 		panel.add(label_nene);
 
-		ObserverCombobox combobox_nene = new ObserverCombobox();
+		ObserverCombobox combobox_nene = new ObserverCombobox(true);
 		combobox_nene.setBounds(143, 90, 180, 20);
 		panel.add(combobox_nene);
 		DaoFactory.getNeneDao().addObserver(combobox_nene);
 		combobox_nene.addItem(null);
 		combobox_nene.populate(DaoFactory.getNeneDao().getNenes());
 		
-		JLabel lblFechaHora = new JLabel("Fecha / Hora");
-		lblFechaHora.setBounds(31, 159, 100, 14);
+		JLabel lblFechaHora = new JLabel("Fecha / Hora (AAAA-MM-DD)");
+		lblFechaHora.setBounds(32, 156, 197, 14);
 		panel.add(lblFechaHora);
 		
 		JLabel label_desde = new JLabel("desde:");
-		label_desde.setBounds(143, 159, 69, 14);
+		label_desde.setBounds(31, 177, 69, 14);
 		panel.add(label_desde);
 		
 		JLabel label_hasta = new JLabel("hasta:");
-		label_hasta.setBounds(336, 159, 69, 14);
+		label_hasta.setBounds(224, 177, 69, 14);
 		panel.add(label_hasta);
 
 		JTextField textfield_desde = new JTextField();
-		textfield_desde.setBounds(196, 156, 127, 19);
+		textfield_desde.setBounds(84, 174, 127, 19);
 		panel.add(textfield_desde);
 
 		JTextField textfield_hasta = new JTextField();
-		textfield_hasta.setBounds(387, 156, 127, 19);
+		textfield_hasta.setBounds(275, 174, 127, 19);
 		panel.add(textfield_hasta);
 		
 		JLabel lblEtiqueta = new JLabel("Etiqueta:");
-		lblEtiqueta.setBounds(31, 188, 69, 14);
+		lblEtiqueta.setBounds(31, 206, 69, 14);
 		panel.add(lblEtiqueta);
 		
-		ObserverCombobox combobox_etiqueta1 = new ObserverCombobox();
-		combobox_etiqueta1.setBounds(143, 185, 180, 20);
+		ObserverCombobox combobox_etiqueta1 = new ObserverCombobox(true);
+		combobox_etiqueta1.setBounds(143, 203, 180, 20);
 		panel.add(combobox_etiqueta1);
 		combobox_etiqueta1.addItem(null);
 		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta1);
@@ -153,7 +145,9 @@ public class Monitor {
 		JScrollPane scrollPane = new JScrollPane();
 		Tabla model = new Tabla(DaoFactory.getNotificacionDAO().getAllItems());
 		tabla = new JTable(model);
+		tabla.setAutoCreateRowSorter(true);
 		model.setTabla(tabla);
+		tabla.getColumnModel().getColumn(0).setCellRenderer(new DateRenderer());
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0), 3));
 		scrollPane.setBounds(44, 326, 1108, 416);
 		scrollPane.setViewportView(tabla);
@@ -161,9 +155,9 @@ public class Monitor {
 		frame.getContentPane().add(scrollPane);
 		
 		JButton botonFiltrar = new JButton("FILTRAR");
-		botonFiltrar.setBounds(54, 232, 438, 23);
+		botonFiltrar.setBounds(54, 251, 438, 23);
 		panel.add(botonFiltrar);
-		botonFiltrar.addActionListener(new FIltrarListener(model, comboBox_contenido, combobox_contexto, combobox_nene, combobox_categoria, combobox_etiqueta1, textfield_desde, textfield_hasta));
+		botonFiltrar.addActionListener(new FIltrarListener(search,model, comboBox_contenido, combobox_contexto, combobox_nene, combobox_categoria, combobox_etiqueta1, textfield_desde, textfield_hasta));
 
 		
 		JPanel panel_2 = new JPanel();
@@ -195,7 +189,7 @@ public class Monitor {
 		lblEliminarEtiqueta.setBounds(12, 81, 207, 14);
 		panel_2.add(lblEliminarEtiqueta);
 
-		ObserverCombobox combobox_etiqueta2 = new ObserverCombobox();
+		ObserverCombobox combobox_etiqueta2 = new ObserverCombobox(false);
 		combobox_etiqueta2.setBounds(252, 75, 207, 20);
 		panel_2.add(combobox_etiqueta2);
 		DaoFactory.getEtiquetaDao().addObserver(combobox_etiqueta2);
@@ -210,13 +204,13 @@ public class Monitor {
 		separator_1.setBounds(36, 117, 462, 14);
 		panel_2.add(separator_1);
 
-		ObserverCombobox combobox_asignar = new ObserverCombobox();
+		ObserverCombobox combobox_asignar = new ObserverCombobox(false);
 		combobox_asignar.setBounds(252, 131, 207, 20);
 		panel_2.add(combobox_asignar);
 		DaoFactory.getEtiquetaDao().addObserver(combobox_asignar);
 		combobox_asignar.populate(DaoFactory.getEtiquetaDao().getAllItems());
 
-		JLabel lblAsignarEtiqueta = new JLabel("Asignar Etiqueta:");
+		JLabel lblAsignarEtiqueta = new JLabel("Asignar/Desasignar Etiqueta:");
 		lblAsignarEtiqueta.setBounds(12, 137, 207, 14);
 		panel_2.add(lblAsignarEtiqueta);
 		
@@ -233,7 +227,7 @@ public class Monitor {
 		lblRenombrarEtiqueta.setBounds(12, 191, 207, 14);
 		panel_2.add(lblRenombrarEtiqueta);
 
-		ObserverCombobox combobox_renombrar = new ObserverCombobox();
+		ObserverCombobox combobox_renombrar = new ObserverCombobox(false);
 		combobox_renombrar.setBounds(252, 185, 207, 20);
 		panel_2.add(combobox_renombrar);
 		DaoFactory.getEtiquetaDao().addObserver(combobox_renombrar);

@@ -1,6 +1,7 @@
 package Dao;
 
 import Model.Categoria;
+import Model.Contexto;
 import Model.Etiqueta;
 import Model.Nene;
 import Utils.ConexionManager;
@@ -12,16 +13,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriaDAO extends ObservableDAO{
+public class ContextoDAO extends ObservableDAO{
 
-    public Categoria getCategoria(Long id){
+    public Contexto getContexto(Long id){
         try {
             String query = prepareGet(id);
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                return new Categoria(resultSet.getString("nombre"), resultSet.getLong("id"));
+                return new Contexto(resultSet.getString("nombre"), resultSet.getLong("id"));
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -29,14 +30,14 @@ public class CategoriaDAO extends ObservableDAO{
         return null;
     }
 
-    public Categoria getOrCreate(String name){
+    public Contexto getOrCreate(String name){
         try {
             String query = prepareGet(name);
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                return new Categoria(resultSet.getString("nombre"),resultSet.getLong("id"));
+                return new Contexto(resultSet.getString("nombre"),resultSet.getLong("id"));
             } else {
                 String insert = prepareInsert(name);
                 statement = conexion.createStatement();
@@ -44,7 +45,7 @@ public class CategoriaDAO extends ObservableDAO{
                 statement = conexion.createStatement();
                 resultSet = statement.executeQuery("SELECT last_insert_rowid()");
                 if (resultSet.next()){
-                    return new Categoria(name, (long) resultSet.getLong(1));
+                    return new Contexto(name, (long) resultSet.getLong(1));
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -53,15 +54,15 @@ public class CategoriaDAO extends ObservableDAO{
         return null;
     }
 
-    public List<Categoria> getCategorias(){
-        List<Categoria> lista = new ArrayList<>();
+    public List<Contexto> getContextos(){
+        List<Contexto> lista = new ArrayList<>();
         try {
             String query = prepareList();
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
-                lista.add(new Categoria(resultSet.getString("nombre"), resultSet.getLong("id")));
+                lista.add(new Contexto(resultSet.getString("nombre"), resultSet.getLong("id")));
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -70,24 +71,24 @@ public class CategoriaDAO extends ObservableDAO{
     }
 
     private String prepareGet(String name){
-        return "SELECT * FROM categoria WHERE nombre='"+ name + "'";
+        return "SELECT * FROM contexto WHERE nombre='"+ name + "'";
     }
 
     private String prepareInsert(String name){
-        return "INSERT INTO categoria (nombre) values ('"+ name + "')";
+        return "INSERT INTO contexto (nombre) values ('"+ name + "')";
     }
 
     private String prepareGet(Long id){
-        return "SELECT * FROM categoria WHERE ID=" + id;
+        return "SELECT * FROM contexto WHERE ID=" + id;
     }
 
     private String prepareList(){
-        return "SELECT * FROM categoria";
+        return "SELECT * FROM contexto";
     }
 
 
     @Override
     public List getAllItems() {
-        return this.getCategorias();
+        return this.getContextos();
     }
 }

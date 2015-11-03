@@ -1,26 +1,24 @@
 package Utils;
 
 import Enums.Contenido;
-import Enums.Contexto;
+import Model.Contexto;
 import Model.Categoria;
 import Model.Etiqueta;
 import Model.Nene;
 import Model.Notificacion;
-import org.omg.CORBA.Current;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
-import java.util.Date;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
-public class Tabla implements TableModel, Observer {
+public class Tabla extends AbstractTableModel implements TableModel, Observer {
 
     List<Notificacion> items;
     String[] columnNames = {"Fecha/Hora envio","Contenido","Contexto","Categoria","Niñ@","Etiquetas"};
-    Class[] columnClass = {Date.class, Contenido.class, Contexto.class, Categoria.class, Nene.class, Etiqueta.class};
+    Class[] columnClass = {Date.class, Contenido.class, Contexto.class, Categoria.class, Nene.class, String.class};
     JTable tabla;
 
     public void setTabla(JTable tabla){
@@ -32,8 +30,9 @@ public class Tabla implements TableModel, Observer {
     }
 
     public void setItems(List<Notificacion> items){
+
         this.items = items;
-        this.tabla.repaint();
+        tabla.tableChanged(new TableModelEvent(this));
     }
 
     @Override
@@ -75,10 +74,23 @@ public class Tabla implements TableModel, Observer {
             case 4:
                 return ((Notificacion) items.toArray()[rowIndex]).getNene();
             case 5:
-                return ((Notificacion) items.toArray()[rowIndex]).getEtiqueta();
+                return etiquetasToString(((Notificacion) items.toArray()[rowIndex]).getEtiquetas());
             default:
                 return null;
         }
+    }
+
+    private String etiquetasToString(List<Etiqueta> etiquetas){
+        StringBuilder sb = new StringBuilder();
+        Iterator iterator = etiquetas.iterator();
+        while (iterator.hasNext()){
+            Etiqueta etiqueta = (Etiqueta) iterator.next();
+            sb.append(etiqueta.toString());
+            if (iterator.hasNext()){
+                sb.append(',');
+            }
+        }
+        return sb.toString();
     }
 
     @Override
@@ -98,8 +110,7 @@ public class Tabla implements TableModel, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        this.items = ((CurrentSearch) o).getResults();
-        this.tabla.repaint();
+        this.setItems(((CurrentSearch) o).getResults());
     }
 
     public Notificacion getAtRow(int rowIndex){

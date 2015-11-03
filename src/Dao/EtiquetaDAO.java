@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
 
@@ -40,19 +41,22 @@ public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
         }
     }
 
-    public Etiqueta getEtiqueta(Long id){
+    public List<Etiqueta> getEtiquetas(List<Long> ids){
+        List<Etiqueta> lista = new ArrayList<>();
         try {
-            String query = prepareGet(id);
-            Connection conexion = ConexionManager.getConexion();
-            Statement statement = conexion.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            if (resultSet.next()) {
-                return new Etiqueta(resultSet.getString("nombre"), resultSet.getLong("id"));
+            for (Long id:ids) {
+                String query = prepareGet(id);
+                Connection conexion = ConexionManager.getConexion();
+                Statement statement = conexion.createStatement();
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next()) {
+                    lista.add(new Etiqueta(resultSet.getString("nombre"), resultSet.getLong("id")));
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return lista;
     }
 
     public void guardarEtiqueta(String nombre){
@@ -86,9 +90,15 @@ public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
             Connection conexion = ConexionManager.getConexion();
             for(Iterator<Notificacion> i = notificaciones.iterator(); i.hasNext(); ) {
                 Notificacion notificacion = i.next();
-                String query = prepareAsignar(notificacion.getId(), etiqueta.getId());
-                Statement statement = conexion.createStatement();
-                statement.executeUpdate(query);
+                if (!notificacion.tieneEtiqueta(etiqueta)){
+                    String query = prepareAsignar(notificacion.getId(), etiqueta.getId());
+                    Statement statement = conexion.createStatement();
+                    statement.executeUpdate(query);
+                } else {
+                    String query = prepareDesasignar(notificacion.getId(), etiqueta.getId());
+                    Statement statement = conexion.createStatement();
+                    statement.executeUpdate(query);
+                }
             }
             this.setChanged();
             this.notifyObservers();
@@ -97,12 +107,28 @@ public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
         }
     }
 
+    public List<Long> getEtiquetasFor(Long notificacion_id){
+        List<Long> lista = new ArrayList<>();
+        try {
+            String query = prepareGetEtiquetasFor(notificacion_id);
+            Connection conexion = ConexionManager.getConexion();
+            Statement statement = conexion.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                lista.add(resultSet.getLong("etiqueta_id"));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     private String prepareRename(String nombre, Long id){
         return "UPDATE etiqueta SET nombre = '" + nombre + "' WHERE ID=" + id;
     }
 
     private String prepareGet(Long id){
-        return "SELECT * FROM etiqueta WHERE ID=" + id;
+        return "SELECT * FROM etiquetA WHERE ID=" + id;
     }
 
     private String prepareDelete(Long id){
@@ -116,10 +142,20 @@ public class EtiquetaDAO extends ObservableDAO<Etiqueta>{
                 " VALUES ('" + nombre + "')";
     }
 
+    private String prepareGetEtiquetasFor(Long notificacion_id){
+        return "SELECT * FROM notificacion_etiqueta" +
+                " WHERE notificacion_id = " + notificacion_id;
+    }
+
     private String prepareAsignar(Long notificacion_id, Long etiqueta_id){
-        return "UPDATE notificacion" +
-                " SET etiqueta_id = " + etiqueta_id +
-                " WHERE id = " + notificacion_id;
+        return "INSERT INTO notificacion_etiqueta VALUES (" +
+                notificacion_id + "," + etiqueta_id + ")";
+    }
+
+    private String prepareDesasignar(Long notificacion_id, Long etiqueta_id){
+        return "DELETE FROM notificacion_etiqueta" +
+                " WHERE notificacion_id = " + notificacion_id +
+                " AND etiqueta_id = " + etiqueta_id;
     }
 
     private String prepareList(){

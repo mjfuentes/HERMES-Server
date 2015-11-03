@@ -1,10 +1,10 @@
 package Model;
 
-public class Nene {
+public class Contexto {
     private String nombre;
     private Long id;
 
-    public Nene(String nombre, Long id){
+    public Contexto(String nombre, Long id){
         this.nombre = nombre;
         this.id = id;
     }

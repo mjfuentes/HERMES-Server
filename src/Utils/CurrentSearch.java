@@ -1,8 +1,7 @@
 package Utils;
 
-import Dao.DaoFactory;
 import Enums.Contenido;
-import Enums.Contexto;
+import Model.Contexto;
 import Model.Categoria;
 import Model.Etiqueta;
 import Model.Nene;
@@ -21,6 +20,7 @@ public class CurrentSearch extends Observable implements Observer {
     private Etiqueta etiqueta;
     private String desde;
     private String hasta;
+    private Boolean dateSort;
 
     public CurrentSearch(){
         this.desde = "";

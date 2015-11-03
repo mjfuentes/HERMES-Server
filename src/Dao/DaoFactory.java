@@ -1,9 +1,12 @@
 package Dao;
 
+import Model.Contexto;
+
 public class DaoFactory {
     private static NotificacionDAO notificacionDAO;
     private static EtiquetaDAO etiquetaDAO;
     private static CategoriaDAO categoriaDao;
+    private static ContextoDAO contextoDao;
     private static NeneDAO neneDAO;
 
     public static NotificacionDAO getNotificacionDAO(){
@@ -25,6 +28,13 @@ public class DaoFactory {
             categoriaDao = new CategoriaDAO();
         }
         return categoriaDao;
+    }
+
+    public static ContextoDAO getContextoDao(){
+        if (contextoDao == null){
+            contextoDao = new ContextoDAO();
+        }
+        return contextoDao;
     }
 
     public static NeneDAO getNeneDao(){

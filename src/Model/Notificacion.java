@@ -2,45 +2,45 @@ package Model;
 import Dao.DaoFactory;
 import Enums.*;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.List;
 
 
 public class Notificacion {
     private Contenido contenido;
-    private Contexto contexto;
+    private Long contexto_id;
     private Long categoria_id;
     private Date fecha_envio;
     private Date fecha_recepcion;
     private Long nene_id;
     private Long id;
-    private Long etiqueta_id;
+    private List<Long> etiquetas_id;
 
     public Notificacion(){}
 
-    public Notificacion(Long id, Contenido contenido, Contexto contexto, Long categoria_id, Date fecha_envio, Date fecha_recepcion, Long nene_id, Long etiqueta_id){
+    public Notificacion(Long id, Contenido contenido, Long contexto_id, Long categoria_id, Date fecha_envio, Date fecha_recepcion, Long nene_id, List<Long> etiquetas_id){
         this.setId(id);
         this.setContenido(contenido);
-        this.setContexto(contexto);
+        this.setContexto_id(contexto_id);
         this.setCategoria_id(categoria_id);
         this.setFecha_envio(fecha_envio);
         this.setFecha_recepcion(fecha_recepcion);
         this.setNene_id(nene_id);
-        this.setEtiqueta_id(etiqueta_id);
+        this.setEtiquetas_id(etiquetas_id);
     }
 
-    public Notificacion(Contenido contenido, Contexto contexto, Long categoria_id, Date fecha_envio, Date fecha_recepcion, Long nene_id){
+    public Notificacion(Contenido contenido, Long contexto_id, Long categoria_id, Date fecha_envio, Long nene_id){
         this.setContenido(contenido);
-        this.setContexto(contexto);
+        this.setContexto_id(contexto_id);
         this.setCategoria_id(categoria_id);
         this.setFecha_envio(fecha_envio);
-        this.setFecha_recepcion(fecha_recepcion);
         this.setNene_id(nene_id);
     }
 
     public Contenido getContenido() {return contenido;}
 
     public Contexto getContexto() {
-        return contexto;
+        return DaoFactory.getContextoDao().getContexto(this.contexto_id);
     }
 
     public Categoria getCategoria() {
@@ -59,8 +59,8 @@ public class Notificacion {
         return DaoFactory.getNeneDao().getNene(this.nene_id);
     }
 
-    public Etiqueta getEtiqueta() {
-        return DaoFactory.getEtiquetaDao().getEtiqueta(etiqueta_id);
+    public List<Etiqueta> getEtiquetas() {
+        return DaoFactory.getEtiquetaDao().getEtiquetas(etiquetas_id);
     }
 
     public Long getId() {
@@ -71,8 +71,8 @@ public class Notificacion {
         this.contenido = contenido;
     }
 
-    public void setContexto(Contexto contexto) {
-        this.contexto = contexto;
+    public void setContexto_id(Long contexto_id) {
+        this.contexto_id = contexto_id;
     }
 
     public void setCategoria_id(Long categoria_id) {
@@ -95,7 +95,17 @@ public class Notificacion {
         this.id = id;
     }
 
-    public void setEtiqueta_id(Long etiqueta_id) {
-        this.etiqueta_id = etiqueta_id;
+    public void setEtiquetas_id(List<Long> etiquetas_id) {
+        this.etiquetas_id = etiquetas_id;
+    }
+
+    public Boolean tieneEtiqueta(Etiqueta etiqueta){
+        if (etiqueta == null){ return true;}
+        for (Etiqueta e: getEtiquetas()){
+            if (e.getId().equals(etiqueta.getId())){
+                return true;
+            }
+        }
+        return false;
     }
 }
