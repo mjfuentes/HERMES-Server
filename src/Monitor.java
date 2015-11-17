@@ -1,7 +1,4 @@
-package Interfaz;
-
 import Dao.DaoFactory;
-import Model.Contexto;
 import Listener.*;
 import Enums.Contenido;
 import Utils.*;
@@ -10,6 +7,8 @@ import java.awt.EventQueue;
 
 import javax.swing.*;
 import java.awt.Color;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 
@@ -26,8 +25,8 @@ public class Monitor {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					JsonFromFileReader reader = new JsonFromFileReader();
-					reader.read(System.getProperty("user.home") + "/datos");
+					Thread server = new ServerThread();
+					server.start();
 					Monitor window = new Monitor();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -48,6 +47,7 @@ public class Monitor {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+
 		frame = new JFrame();
 		frame.setBackground(Color.WHITE);
 		frame.setBounds(100, 100, 1200, 800);
@@ -59,6 +59,7 @@ public class Monitor {
 		DaoFactory.getEtiquetaDao().addObserver(search);
 		DaoFactory.getNeneDao().addObserver(search);
 		DaoFactory.getCategoriaDao().addObserver(search);
+		DaoFactory.getNotificacionDAO().addObserver(search);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Filtros", TitledBorder.LEADING, TitledBorder.TOP, null, null));

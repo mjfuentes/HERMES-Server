@@ -28,6 +28,8 @@ public class NotificacionDAO extends ObservableDAO<Notificacion>{
             Connection conexion = ConexionManager.getConexion();
             Statement statement = conexion.createStatement();
             statement.executeUpdate(query);
+            setChanged();
+            notifyObservers();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

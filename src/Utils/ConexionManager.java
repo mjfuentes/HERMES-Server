@@ -8,7 +8,7 @@ public class ConexionManager {
     private static Connection conexion;
     private static final String USER = "user";
     private static final String PASSWORD = "password";
-    private static final String DB = "jdbc:sqlite:/home/matias/Documents/Facultad/4to/Laboratorio/trabajo_final/trabajo_final";
+    private static final String DB = "jdbc:sqlite:./bbdd";
     private ConexionManager(){
         super();
     }

@@ -25,7 +25,8 @@ public class EtiquetaAssignListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         List<Notificacion> notificaciones = new ArrayList<>();
         for (int row_number : tabla.getSelectedRows()){
-            notificaciones.add(((Tabla)tabla.getModel()).getAtRow(row_number));
+            int selected = tabla.convertRowIndexToModel(row_number);
+            notificaciones.add(((Tabla)tabla.getModel()).getAtRow(selected));
         }
         EtiquetaService.getInstance().asignarEtiqueta(notificaciones,(Etiqueta)combobox.getSelectedItem());
     }
